@@ -1,28 +1,49 @@
 package board;
 
-import pieces.Bishop;
-import pieces.King;
-import pieces.Knight;
-import pieces.Pawn;
-import pieces.Piece;
-import pieces.PieceColor;
-import pieces.Queen;
-import pieces.Rook;
+import java.util.Set;
+import pieces.*;
+import static pieces.PieceColor.*;
 
 public class Board {
+    
     public static int BOARD_SIZE = 8;
     private Piece[][] board;
+
     public Board() {
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
-        Pawn whitePawn = new Pawn(PieceColor.WHITE);
-        Pawn blackPawn = new Pawn(PieceColor.BLACK);
+        Pawn whitePawn = new Pawn(WHITE);
+        Pawn blackPawn = new Pawn(BLACK);
         for (int file = 1; file <= BOARD_SIZE; file++) {
             board[1][file - 1] = whitePawn;
             board[6][file - 1] = blackPawn;
         }
-        setUpPieces(1, PieceColor.WHITE);
-        setUpPieces(BOARD_SIZE, PieceColor.BLACK);
+        for (int rank = 3; rank <= 6; rank++) {
+            for (int file = 1; file <= BOARD_SIZE; file++) {
+                board[rank - 1][file - 1] = new Empty();
+            }
+        }
+        setUpPieces(1, WHITE);
+        setUpPieces(BOARD_SIZE, BLACK);
     }
+
+    public void movePiece(int startRank, int startFile, int endRank, int endFile) {
+        validateRankAndFile(startRank, startFile);
+        validateRankAndFile(endRank, endFile);
+        Piece pieceToMove = board[startRank - 1][startFile - 1];
+        Move move = new Move(startRank, startFile, endRank, endFile);
+        Set<Move> moves = pieceToMove.getMoves(this, startRank, startFile);
+        if (!moves.contains(move)) {
+            String message = String.format("Cannot move piece at (%d, %d) to (%d, %d)", startRank, startFile, endRank, endFile);
+            throw new IllegalArgumentException(message);
+        }
+        board[endRank - 1][endFile - 1] = pieceToMove;
+        board[startRank - 1][startFile - 1] = new Empty();
+    }
+    
+    public Piece pieceAt(int rank, int file) {
+        validateRankAndFile(rank, file);
+        return board[rank - 1][file - 1];
+    }    
 
     private void setUpPieces(int rank, PieceColor color) {
         board[rank - 1][0] = new Rook(color);
@@ -34,12 +55,11 @@ public class Board {
         board[rank - 1][6] = new Knight(color);
         board[rank - 1][7] = new Rook(color);
     }
-    
-    public Piece pieceAt(int rank, int file) {
+
+    private void validateRankAndFile(int rank, int file) {
         if (rank < 1 || file < 1 || rank > BOARD_SIZE || file > BOARD_SIZE) {
             String message = String.format("Cannot find piece at rank %d and file %d", rank, file);
             throw new IllegalArgumentException(message);
         }
-        return board[rank - 1][file - 1];
     }
 }
