@@ -25,9 +25,9 @@ public abstract class Piece {
     }
 
     protected boolean validMove(Board board, Move move) {
-        return validRankAndFile(move.startRank, move.startFile) 
-            && validRankAndFile(move.endRank, move.endFile)
-            && board.pieceAt(move.endRank, move.endFile).color != color;
+        return validRankAndFile(move.startRank(), move.startFile()) 
+            && validRankAndFile(move.endRank(), move.endFile())
+            && board.pieceAt(move.endRank(), move.endFile()).color != color;
     }    
     
     public abstract Set<Move> getMoves(Board board, int rank, int file);
