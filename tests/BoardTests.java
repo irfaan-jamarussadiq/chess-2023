@@ -4,15 +4,11 @@ import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.Test;
-import board.Board;
+import board.*;
 import pieces.*;
+import static board.GameStatus.*;
 import static pieces.PieceColor.*;
-
-// REQUIREMENTS
-// The pieces are king, queen, bishop, knight, rook, and pawn.
-// Pieces move on an 8x8 board.
-// The pieces must be placed on the board in their starting configuration.
-// There are two players, each with their own set of pieces, white and black.
+import java.util.Set;
 
 public class BoardTests {
 
@@ -90,6 +86,93 @@ public class BoardTests {
         board.movePiece(2, 5, 4, 5);        
         board.movePiece(7, 5, 5, 5);
         assertDoesNotThrow(() -> board.movePiece(1, 5, 2, 5));
+    }
+
+    @Test
+    public void testFirstMoveIsWhiteTurn() {
+        Game game = new Game();
+        assertEquals(ONGOING, game.getStatus());
+        assertEquals(WHITE, game.getCurrentPlayer());
+    }
+
+    @Test
+    public void testSecondMoveIsBlackTurn() {
+        Game game = new Game();
+        game.movePiece(2, 5, 4, 5);
+        assertEquals(ONGOING, game.getStatus());        
+        assertEquals(BLACK, game.getCurrentPlayer());
+    }    
+
+    @Test
+    public void testThirdMoveIsWhiteTurn() {
+        Game game = new Game();
+        game.movePiece(2, 5, 4, 5);        
+        game.movePiece(7, 5, 5, 5);
+        assertEquals(ONGOING, game.getStatus());
+        assertEquals(WHITE, game.getCurrentPlayer());
+    }
+
+    @Test
+    public void testKingMovesWhite() {
+        Board board = new Board();
+        board.movePiece(2, 5, 4, 5);
+        Set<Move> moves = new King(WHITE).getMoves(board, new Location(1, 5));
+        assertEquals(1, moves.size());
+        assertEquals(new Move(1, 5, 2, 5), moves.iterator().next());
+    }    
+
+    @Test
+    public void testKingMovesBlack() {
+        Board board = new Board();
+        board.movePiece(2, 5, 4, 5);
+        Set<Move> moves = new King(BLACK).getMoves(board, new Location(8, 5));
+        assertEquals(0, moves.size());
+    }
+    
+    @Test
+    public void testKingMovesBlack2() {
+        Board board = new Board();
+        board.movePiece(2, 5, 4, 5);
+        board.movePiece(7, 5, 5, 5);
+        Set<Move> moves = new King(BLACK).getMoves(board, new Location(8, 5));
+        assertEquals(1, moves.size());
+        assertEquals(new Move(8, 5, 7, 5), moves.iterator().next());
+    }
+    
+    @Test
+    public void testKingMovesBlackAndWhite() {
+        Board board = new Board();
+        System.out.println(board);
+        board.movePiece(2, 5, 4, 5);
+        board.movePiece(7, 5, 5, 5);
+        board.movePiece(2, 4, 4, 4);
+        board.movePiece(7, 4, 5, 4);
+        Set<Move> whiteMoves = new King(WHITE).getMoves(board, new Location(1, 5));
+        Set<Move> blackMoves = new King(BLACK).getMoves(board, new Location(8, 5));
+        Set<Move> expectedWhite = Set.of(new Move(1, 5, 2, 5), new Move(1, 5, 2, 4));
+        Set<Move> expectedBlack = Set.of(new Move(8, 5, 7, 5), new Move(8, 5, 7, 4));
+        assertEquals(2, whiteMoves.size());
+        assertEquals(2, blackMoves.size());
+        assertEquals(expectedWhite, whiteMoves);
+        assertEquals(expectedBlack, blackMoves);
+    }
+    
+    @Test
+    public void checkGameHistory() {
+        Game game = new Game();
+        assertEquals(0, game.getHistory().size());
+        game.movePiece(2, 4, 4, 4);
+        assertEquals(1, game.getHistory().size());
+        assertEquals(new Move(2, 4, 4, 4), game.getHistory().peek());
+        game.movePiece(7, 4, 5, 4);
+        assertEquals(2, game.getHistory().size());
+        assertEquals(new Move(7, 4, 5, 4), game.getHistory().peek());
+        game.movePiece(1, 6, 3, 4);
+        assertEquals(3, game.getHistory().size());
+        assertEquals(new Move(1, 6, 3, 4), game.getHistory().peek());
+        game.movePiece(7, 1, 5, 1);
+        assertEquals(3, game.getHistory().size());
+        assertEquals(new Move(1, 6, 3, 4), game.getHistory().peek());
     }
 
 }
