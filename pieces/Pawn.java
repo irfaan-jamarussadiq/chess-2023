@@ -3,6 +3,9 @@ package pieces;
 import java.util.Set;
 import java.util.HashSet;
 import board.Board;
+import board.Location;
+import board.Move;
+
 import static pieces.PieceColor.*;
 
 public class Pawn extends Piece {
@@ -11,8 +14,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public Set<Move> getMoves(Board board, int rank, int file) {
+    public Set<Move> getMoves(Board board, Location location) {
         Set<Move> moves = new HashSet<>();
+        int rank = location.rank();
+        int file = location.file();        
         int direction = (color == WHITE) ? 1 : -1;
         int firstRank = (color == WHITE) ? 2 : 7;
         int enPassantRank = (color == WHITE) ? 4 : 5;
@@ -52,4 +57,9 @@ public class Pawn extends Piece {
 
         return moves;
     }
+
+    @Override
+    public String toString() {
+        return (color == PieceColor.WHITE) ? "P" : "p";
+    }    
 }

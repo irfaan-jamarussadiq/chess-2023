@@ -1,10 +1,34 @@
 package pieces;
 
+import static pieces.PieceColor.*;
 import java.util.Set;
 import board.Board;
+import board.Location;
+import board.Move;
 
 public abstract class Piece {
     protected PieceColor color;
+
+    public abstract Set<Move> getMoves(Board board, Location location);
+
+    protected boolean validMove(Board board, Move move) {
+        try {
+            Board.validateLocation(move.startLocation());
+            Board.validateLocation(move.endLocation());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        Location end = move.endLocation();
+        return board.pieceAt(end.rank(), end.file()).color != color;
+    }
+
+    public boolean isEnemy(PieceColor color) {
+        if (color == UNDEFINED || this.color == UNDEFINED) {
+            return false;
+        } else {
+            return this.color != color;
+        }
+    }
 
     @Override
     public boolean equals(Object other) {
@@ -20,15 +44,4 @@ public abstract class Piece {
         return java.util.Objects.hash(color);
     }
 
-    protected boolean validRankAndFile(int rank, int file) {
-        return rank >= 1 && file >= 1 && rank <= Board.BOARD_SIZE && file <= Board.BOARD_SIZE;
-    }
-
-    protected boolean validMove(Board board, Move move) {
-        return validRankAndFile(move.startRank(), move.startFile()) 
-            && validRankAndFile(move.endRank(), move.endFile())
-            && board.pieceAt(move.endRank(), move.endFile()).color != color;
-    }    
-    
-    public abstract Set<Move> getMoves(Board board, int rank, int file);
 }
