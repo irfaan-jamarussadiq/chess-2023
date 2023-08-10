@@ -118,17 +118,17 @@ public class PieceTests {
     @Test
     public void testIsEnemyPiece() {
         Piece knight = new Knight(WHITE);
-        assertTrue(knight.isEnemy(new Knight(BLACK)));
-        assertFalse(knight.isEnemy(knight));
-        assertFalse(knight.isEnemy(null));
+        assertTrue(Piece.areEnemies(knight, new Knight(BLACK)));
+        assertFalse(Piece.areEnemies(knight, knight));
+        assertFalse(Piece.areEnemies(knight, null));
     }
 
     @Test
     public void testIsFriendlyPiece() {
         Piece bishop = new Bishop(WHITE);
-        assertTrue(bishop.isFriendly(new Pawn(WHITE)));
-        assertFalse(bishop.isFriendly(new Knight(BLACK)));
-        assertFalse(bishop.isFriendly(null));
+        assertTrue(Piece.areFriends(bishop, new Pawn(WHITE)));
+        assertFalse(Piece.areFriends(bishop, new Knight(BLACK)));
+        assertFalse(Piece.areFriends(bishop, null));
     }
 
     @Test
