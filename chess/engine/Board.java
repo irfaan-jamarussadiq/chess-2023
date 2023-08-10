@@ -1,8 +1,6 @@
 package chess.engine;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static chess.engine.pieces.PieceColor.*;
@@ -105,11 +103,12 @@ public class Board {
 
     public Set<Move> getAttackingMoves(PieceColor player, int rank, int file) {
         Set<Move> attacks = new HashSet<>();
-        Piece enemyKnight = new Knight((player == WHITE) ? BLACK : WHITE);
+        Piece knight = new Knight(player);
         // Get knight attacks
         Set<Move> knightMoves = new Knight(player).getMoves(rank, file);
         Set<Move> knightAttacks = knightMoves.stream()
-                .filter(move -> enemyKnight.canCapture(move.endRank(), move.endFile(), rank, file))
+                .filter(move -> !Piece.areFriends(knight, pieceAt(move.endRank(), move.endFile())))
+                .filter(move -> knight.canCapture(move.endRank(), move.endFile(), rank, file))
                 .collect(Collectors.toSet());
         attacks.addAll(knightAttacks);
 
@@ -122,7 +121,7 @@ public class Board {
             int queenFile = file + dir[1];
             while (queenRank <= BOARD_SIZE && queenRank >= 1 && queenFile <= BOARD_SIZE && queenFile >= 1) {
                 Piece piece = pieceAt(queenRank, queenFile);
-                if (piece != null && piece.isFriendly(queen)) {
+                if (Piece.areFriends(piece, queen)) {
                     break;
                 }
                 attacks.add(new Move(rank, file, queenRank, queenFile));

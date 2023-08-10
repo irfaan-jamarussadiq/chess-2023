@@ -21,14 +21,14 @@ public abstract class Piece {
 
     public abstract Set<Move> getMoves(int rank, int file);
 
-    public boolean isEnemy(Piece potentialEnemy) {
-        if (potentialEnemy == null) return false;
-        return potentialEnemy.color != color;
+    public static boolean areEnemies(Piece piece1, Piece piece2) {
+        if (piece1 == null || piece2 == null) return false;
+        return piece1.color != piece2.color;
     }
 
-    public boolean isFriendly(Piece potentialFriend) {
-        if (potentialFriend == null) return false;
-        return potentialFriend.color == color;
+    public static boolean areFriends(Piece piece1, Piece piece2) {
+        if (piece1 == null || piece2 == null) return false;
+        return piece1.color == piece2.color;
     }
     
     @Override
