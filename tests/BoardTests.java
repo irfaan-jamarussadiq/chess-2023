@@ -3,6 +3,8 @@ package tests;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import java.util.Set;
+
 import org.junit.Test;
 
 import chess.engine.*;
@@ -61,7 +63,46 @@ public class BoardTests {
         board.movePiece(7, 5, 5, 5);
         assertTrue(board.pieceAt(4, 6).canCapture(4, 6, 5, 5));
         assertFalse(board.pieceAt(4, 6).canMove(4, 6, 5, 5));
-   }
+    }
+
+    @Test
+    public void testKnightOnG1CannotCapturePawnOnE5() {
+        Board board = new Board();
+        board.movePiece(1, 7, 3, 6);
+        board.movePiece(7, 5, 5, 5);
+        board.movePiece(3, 6, 1, 7);
+        assertFalse(board.pieceAt(1, 7).canCapture(1, 7, 5, 5));
+    }
+
+    @Test
+    public void testKnightOnG1CanCapturePawnOnE5AfterUndoingMove() {
+        Board board = new Board();
+        board.movePiece(1, 7, 3, 6);
+        board.movePiece(7, 5, 5, 5);
+        board.movePiece(3, 6, 1, 7);
+        assertNull(board.pieceAt(3, 6));
+        board.undoMove(3, 6, 1, 7);
+        assertTrue(board.pieceAt(3, 6) instanceof Knight);
+        assertTrue(board.pieceAt(3, 6).canCapture(3, 6, 5, 5));
+    }
+
+    @Test
+    public void testGetAttackingMovesAfterFirstMove() {
+        Board board = new Board();
+        board.movePiece(2, 4, 3, 4);
+        board.movePiece(7, 4, 5, 4);
+        board.movePiece(2, 5, 3, 5);
+        Set<Move> moves = board.getAttackingMoves(WHITE, 1, 5);
+        Set<Move> expected = Set.of(
+            new Move(1, 5, 3, 6),
+            new Move(1, 5, 2, 4),
+            new Move(1, 5, 2, 5),
+            new Move(1, 5, 3, 3),
+            new Move(1, 5, 4, 2),
+            new Move(1, 5, 5, 1)
+        );
+        assertEquals(expected, moves);
+    }
 
     @Test
     public void testPieceAtInvalidSquare() {

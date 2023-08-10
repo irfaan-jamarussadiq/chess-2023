@@ -68,7 +68,11 @@ public class Board {
         }
     }
 
-    private static boolean isWithinBounds(int startRank, int startFile, int endRank, int endFile) {
+    private static boolean isWithinBounds(Move move) {
+        int startRank = move.startRank();
+        int startFile = move.startFile();
+        int endRank = move.endRank();
+        int endFile = move.endFile();
         return startRank >= 1 && startRank <= BOARD_SIZE
                 && startFile >= 1 && startFile <= BOARD_SIZE
                 && endRank >= 1 && endRank <= BOARD_SIZE
@@ -107,8 +111,8 @@ public class Board {
         // Get knight attacks
         Set<Move> knightMoves = new Knight(player).getMoves(rank, file);
         Set<Move> knightAttacks = knightMoves.stream()
+                .filter(move -> isWithinBounds(move))
                 .filter(move -> !Piece.areFriends(knight, pieceAt(move.endRank(), move.endFile())))
-                .filter(move -> knight.canCapture(move.endRank(), move.endFile(), rank, file))
                 .collect(Collectors.toSet());
         attacks.addAll(knightAttacks);
 
@@ -130,9 +134,7 @@ public class Board {
             }
         }
 
-        return attacks.stream()
-                .filter(move -> isWithinBounds(move.startRank(), move.startFile(), move.endRank(), move.endFile()))
-                .collect(Collectors.toSet());
+        return attacks.stream().filter(move -> isWithinBounds(move)).collect(Collectors.toSet());
     }
 
     @Override
