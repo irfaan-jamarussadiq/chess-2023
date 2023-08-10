@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import static chess.engine.pieces.PieceColor.*;
 import chess.engine.pieces.*;
 
-public class Board implements MoveValidator {
+public class Board {
 
     public static final int BOARD_SIZE = 8;
     private Square[][] board;
@@ -93,23 +93,6 @@ public class Board implements MoveValidator {
         board[rank - 1][file - 1] = new Square();
     }
 
-    @Override
-    public boolean isValidPieceMove(int startRank, int startFile, int endRank, int endFile) {
-        Piece piece = pieceAt(startRank, startFile);
-        if (piece == null)
-            return false;
-        return piece.canMove(startRank, startFile, endRank, endFile)
-                || piece.canCapture(startRank, startFile, endRank, endFile);
-    }
-
-    @Override
-    public boolean isMoveCapturingFriendlyPiece(int startRank, int startFile, int endRank, int endFile) {
-        Piece pieceToMove = pieceAt(startRank, startFile);
-        Piece pieceAtEnd = pieceAt(endRank, endFile);
-        return pieceToMove.canCapture(startRank, startFile, endRank, endFile)
-                && pieceToMove.isFriendly(pieceAtEnd);
-    }
-
     public void undoMove(int startRank, int startFile, int endRank, int endFile) {
         Piece pieceMoved = pieceAt(endRank, endFile);
         addPiece(startRank, startFile, pieceMoved);
@@ -120,7 +103,6 @@ public class Board implements MoveValidator {
         }
     }
 
-    /* ATTACKING MOVES */
     public Set<Move> getAttackingMoves(PieceColor player, int rank, int file) {
         Set<Move> attacks = new HashSet<>();
         Piece enemyKnight = new Knight((player == WHITE) ? BLACK : WHITE);
