@@ -15,11 +15,6 @@ public class Board {
 
     public Board() {
         pieces = new HashMap<>();
-        for (int rank = 1; rank <= BOARD_SIZE; rank++) {
-            for (int file = 1; file <= BOARD_SIZE; file++) {
-                clearSquare(rank, file);
-            }
-        }
         addPlayerPieces(WHITE);
         addPlayerPieces(BLACK);
         capturedPieces = new Stack<>();
@@ -60,7 +55,6 @@ public class Board {
                 return pieceToMove.canMoveInDirection(move.start(), move.end());
             } 
         }
-        
         return false;
     }
 
