@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import chess.engine.game.Board;
 import chess.engine.game.Location;
+import chess.engine.game.Move;
 import chess.engine.pieces.*;
 import static chess.engine.pieces.PieceColor.*;
 
@@ -80,7 +81,9 @@ public class BoardTests {
     private void moveBoardPiece(Board board, int sRank, int sFile, int eRank, int eFile) {
         Location start = new Location(sRank, sFile);
         Location end = new Location(eRank, eFile);
-        board.movePiece(start, end);
+        if (board.isValidMove(new Move(start, end))) {
+            board.movePiece(start, end);
+        }
     }
 
     @Test
