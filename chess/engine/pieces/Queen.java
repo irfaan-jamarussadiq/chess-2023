@@ -3,7 +3,8 @@ package chess.engine.pieces;
 import java.util.HashSet;
 import java.util.Set;
 
-import chess.engine.Move;
+import chess.engine.game.Location;
+import chess.engine.game.Move;
 
 public class Queen extends Piece {
 
@@ -12,20 +13,25 @@ public class Queen extends Piece {
     }
 
     @Override
-    public boolean canMove(int startRank, int startFile, int endRank, int endFile) {
-        int diffRank = Math.abs(startRank - endRank);
-        int diffFile = Math.abs(startFile - endFile);
+    public boolean canMoveInDirection(Location start, Location end) {
+        int diffRank = Math.abs(start.rank() - end.rank());
+        int diffFile = Math.abs(start.file() - end.file());
         return (diffRank == diffFile) || (diffRank == 0 ^ diffFile == 0);
     }
 
     @Override
-    public Set<Move> getMoves(int rank, int file) {
-        Set<Move> bishopMoves = new Bishop(color).getMoves(rank, file);
-        Set<Move> rookMoves = new Rook(color).getMoves(rank, file);
+    public Set<Move> getPossibleMoves(Location location, int boardSize) {
+        Set<Move> bishopMoves = new Bishop(color).getPossibleMoves(location, boardSize);
+        Set<Move> rookMoves = new Rook(color).getPossibleMoves(location, boardSize);
         Set<Move> queenMoves = new HashSet<>();
         queenMoves.addAll(bishopMoves);
         queenMoves.addAll(rookMoves);
         return queenMoves;
-   }
+    }
+
+    @Override
+    public String toString() {
+        return color == PieceColor.WHITE ? "♕" : "♛";
+    }
 
 }

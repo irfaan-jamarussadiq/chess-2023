@@ -11,6 +11,11 @@ public enum PieceColor {
         public int getPawnStartingRank() {
             return 2;
         }
+
+        @Override
+        public int getPieceStartingRank() {
+            return 1;
+        }
     }, 
     BLACK {
         @Override
@@ -22,8 +27,14 @@ public enum PieceColor {
         public int getPawnStartingRank() {
             return 7;
         }
+
+        @Override
+        public int getPieceStartingRank() {
+            return 8;
+        }
     };
 
     public abstract int getDirection();
     public abstract int getPawnStartingRank();
+    public abstract int getPieceStartingRank();
 }

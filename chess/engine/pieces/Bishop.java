@@ -3,8 +3,8 @@ package chess.engine.pieces;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import chess.engine.Board;
-import chess.engine.Move;
+import chess.engine.game.Location;
+import chess.engine.game.Move;
 
 public class Bishop extends Piece {
 
@@ -13,28 +13,29 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean canMove(int startRank, int startFile, int endRank, int endFile) {
-        return Math.abs(startRank - endRank) == Math.abs(startFile - endFile);
+    public Set<Move> getPossibleMoves(Location location, int boardSize) {
+        Set<Move> moves = new LinkedHashSet<>();
+        int rank = location.rank();
+        int file = location.file();
+        int radius = 1;
+        while (radius <= boardSize) {
+            moves.add(new Move(rank, file, rank + radius, file + radius));
+            moves.add(new Move(rank, file, rank - radius, file - radius));
+            moves.add(new Move(rank, file, rank - radius, file + radius));    
+            moves.add(new Move(rank, file, rank + radius, file - radius));
+            radius++;
+        }
+        return moves;
     }
 
     @Override
-    public Set<Move> getMoves(int rank, int file) {
-        Set<Move> moves = new LinkedHashSet<>();
-        int radius = 1;
-        int boardLength = Board.BOARD_SIZE;
-        while (radius <= boardLength) {
-            moves.add(new Move(rank, file, rank + radius, file + radius));
-            moves.add(new Move(rank, file, rank - radius, file - radius));
-            moves.add(new Move(rank, file, rank + radius, file - radius));
-            moves.add(new Move(rank, file, rank - radius, file + radius));    
-            radius++;
-        }
-        moves.removeIf(move -> {
-            int endRank = move.endRank();
-            int endFile = move.endFile();
-            return endRank < 1 || endRank > boardLength || endFile < 1 || endFile > boardLength;
-        });
-        return moves;
+    public boolean canMoveInDirection(Location start, Location end) {
+        return Math.abs(start.rank() - end.rank()) == Math.abs(start.file() - end.file());
+    }
+
+    @Override
+    public String toString() {
+        return color == PieceColor.WHITE ? "♗" : "♝";
     }
 
 }
