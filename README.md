@@ -21,7 +21,7 @@ Abstract class that Pawn, Knight, Bishop, Rook, Queen, and King classes derive f
 Class that allows pieces to move on the board and performs some checks on whether the moves suggested are valid according to the piece's movement properties.
 
 #### Attributes
-- Map<Location, Piece> board
+- `Map<Location, Piece> board`
   - Associates locations on the board (rank and file coordinates) with the pieces at those locations.
   - Using a map takes up less space than a traditional 2D array since we do not need to allocate memory for empty squares.
 #### Methods
