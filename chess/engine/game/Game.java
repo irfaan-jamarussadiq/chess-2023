@@ -9,8 +9,8 @@ import java.util.*;
 public class Game {
 
     private Board board;
-
     private Player currentPlayer;
+
     public static final Player whitePlayer = new Player(WHITE, 1, 5);
     public static final Player blackPlayer = new Player(BLACK, 8, 5);
 
@@ -19,7 +19,7 @@ public class Game {
         currentPlayer = whitePlayer;
     }
 
-    public void makeMove(Move move) {
+    public void makeMove(Move move, Board board) {
         // Check if move is out of bounds of the board or not characteristic of piece
         if (!board.isValidMove(move)) {
             return;
@@ -44,6 +44,10 @@ public class Game {
 
         // If the move is legal and does not cause check, then update the current player.
         currentPlayer = (currentPlayer == whitePlayer) ? blackPlayer : whitePlayer;
+    }
+
+    public void makeMove(Move move) {
+        makeMove(move, board);
     }
 
     private boolean isCastlingMove(Move move) {
@@ -181,7 +185,7 @@ public class Game {
 
     private boolean moveCausesCheck(Player player, Move move) {
         Board tempBoard = board.deepCopy();
-        tempBoard.movePiece(move.start(), move.end());
+        makeMove(move, tempBoard);
         return isInCheck(player, tempBoard);
     }
 
@@ -202,11 +206,7 @@ public class Game {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
+    } 
 
     @Override
     public String toString() {
