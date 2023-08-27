@@ -3,18 +3,21 @@ package chess.engine.pieces;
 import java.util.Objects;
 import java.util.Set;
 
-import chess.engine.game.Location;
-import chess.engine.game.Move;
+import chess.engine.board.Board;
+import chess.engine.board.Location;
+import chess.engine.board.Move;
 
 public abstract class Piece {
     
-    public PieceColor color;    
+    public PieceColor color;   
+    private boolean hasMoved; 
 
     public Piece(PieceColor color) {
         this.color = color;
+        this.hasMoved = false;
     }
 
-    public abstract Set<Move> getPossibleMoves(Location location, int boardSize);
+    public abstract Set<Move> getPossibleMoves(Board board, Location location);
 
     public abstract boolean canMoveInDirection(Location start, Location end);
 
@@ -37,7 +40,15 @@ public abstract class Piece {
 
         return this.color == piece.color;
     }
-    
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved() {
+        this.hasMoved = true;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
