@@ -3,7 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import chess.engine.game.Location;
+import chess.engine.board.Location;
 import chess.engine.pieces.*;
 import static chess.engine.pieces.PieceColor.*;
 
