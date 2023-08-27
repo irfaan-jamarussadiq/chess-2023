@@ -1,10 +1,8 @@
 package chess.engine;
 
 import java.util.Scanner;
-
 import chess.engine.game.Game;
 import chess.engine.game.GameStatus;
-import chess.engine.game.Move;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,16 +10,17 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         GameStatus status;
         do {
-            status = game.getStatus();
             System.out.println(game);
             System.out.println("Enter a move (e.g. e2 e4): ");
             String moveInput = scanner.nextLine();
             int[] locations = parseMove(moveInput);
             if (locations != null) {
-                Move move = new Move(locations[0], locations[1], locations[2], locations[3]);
-                game.makeMove(move);
+                game.makeMove(locations[0], locations[1], locations[2], locations[3]);
             }
+            status = game.getStatus();
         } while(status == GameStatus.ONGOING);
+        System.out.println(game);
+        System.out.println(status);
         scanner.close();
     }
 
