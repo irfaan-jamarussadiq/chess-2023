@@ -1,10 +1,11 @@
 package chess.engine.pieces;
 
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
-import chess.engine.game.Location;
-import chess.engine.game.Move;
+import chess.engine.board.Board;
+import chess.engine.board.Location;
+import chess.engine.board.Move;
 
 public class Bishop extends Piece {
 
@@ -13,18 +14,36 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public Set<Move> getPossibleMoves(Location location, int boardSize) {
-        Set<Move> moves = new LinkedHashSet<>();
-        int rank = location.rank();
-        int file = location.file();
-        int radius = 1;
-        while (radius <= boardSize) {
-            moves.add(new Move(rank, file, rank + radius, file + radius));
-            moves.add(new Move(rank, file, rank - radius, file - radius));
-            moves.add(new Move(rank, file, rank - radius, file + radius));    
-            moves.add(new Move(rank, file, rank + radius, file - radius));
-            radius++;
+    public Set<Move> getPossibleMoves(Board board, Location location) {
+        Set<Move> moves = new HashSet<>();
+        moves.addAll(getDiagonalMoves(board, location, 1, 1));
+        moves.addAll(getDiagonalMoves(board, location, -1, -1));
+        moves.addAll(getDiagonalMoves(board, location, 1, -1));
+        moves.addAll(getDiagonalMoves(board, location, -1, 1));
+       return moves;
+    }
+
+    private Set<Move> getDiagonalMoves(Board board, Location location, int dRank, int dFile) {
+        Set<Move> moves = new HashSet<>();
+        int rank = location.rank() + dRank;
+        int file = location.file() + dFile;
+        Piece king = new King(color);
+        while (rank >= 1 && file >= 1 && rank <= Board.BOARD_SIZE && file <= Board.BOARD_SIZE) {
+            Piece piece = board.pieceAt(rank, file);
+            if (king.isFriendOf(piece)) {
+                break;
+            }
+
+            moves.add(new Move(location.rank(), location.file(), rank, file));
+
+            if (king.isEnemyOf(piece)) {
+                break;
+            }
+
+            rank += dRank;
+            file += dFile;
         }
+
         return moves;
     }
 
@@ -35,7 +54,7 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return color == PieceColor.WHITE ? "♗" : "♝";
+        return color == PieceColor.WHITE ? "♝" : "♗";
     }
 
 }

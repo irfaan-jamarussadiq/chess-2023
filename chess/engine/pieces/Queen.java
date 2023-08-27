@@ -3,8 +3,9 @@ package chess.engine.pieces;
 import java.util.HashSet;
 import java.util.Set;
 
-import chess.engine.game.Location;
-import chess.engine.game.Move;
+import chess.engine.board.Board;
+import chess.engine.board.Location;
+import chess.engine.board.Move;
 
 public class Queen extends Piece {
 
@@ -20,18 +21,16 @@ public class Queen extends Piece {
     }
 
     @Override
-    public Set<Move> getPossibleMoves(Location location, int boardSize) {
-        Set<Move> bishopMoves = new Bishop(color).getPossibleMoves(location, boardSize);
-        Set<Move> rookMoves = new Rook(color).getPossibleMoves(location, boardSize);
+    public Set<Move> getPossibleMoves(Board board, Location location) {
         Set<Move> queenMoves = new HashSet<>();
-        queenMoves.addAll(bishopMoves);
-        queenMoves.addAll(rookMoves);
+        queenMoves.addAll(new Bishop(color).getPossibleMoves(board, location));
+        queenMoves.addAll(new Rook(color).getPossibleMoves(board, location));
         return queenMoves;
     }
 
     @Override
     public String toString() {
-        return color == PieceColor.WHITE ? "♕" : "♛";
+        return color == PieceColor.WHITE ? "♛" : "♕";
     }
 
 }

@@ -3,8 +3,9 @@ package chess.engine.pieces;
 import java.util.HashSet;
 import java.util.Set;
 
-import chess.engine.game.Location;
-import chess.engine.game.Move;
+import chess.engine.board.Board;
+import chess.engine.board.Location;
+import chess.engine.board.Move;
 
 public class Knight extends Piece {
 
@@ -20,24 +21,35 @@ public class Knight extends Piece {
     }
 
     @Override
-    public Set<Move> getPossibleMoves(Location location, int boardSize) {
-        Set<Move> moves = new HashSet<>();
+    public Set<Move> getPossibleMoves(Board board, Location location) {
+        Set<Move> candidateMoves = new HashSet<>();
         int rank = location.rank();
         int file = location.file();
-        moves.add(new Move(rank, file, rank + 1, file + 2));
-        moves.add(new Move(rank, file, rank - 1, file - 2));
-        moves.add(new Move(rank, file, rank + 1, file - 2));
-        moves.add(new Move(rank, file, rank - 1, file + 2));
-        moves.add(new Move(rank, file, rank + 2, file + 1));
-        moves.add(new Move(rank, file, rank - 2, file + 1));
-        moves.add(new Move(rank, file, rank + 2, file - 1));
-        moves.add(new Move(rank, file, rank - 2, file - 1));
+        candidateMoves.add(new Move(rank, file, rank + 1, file + 2));
+        candidateMoves.add(new Move(rank, file, rank - 1, file - 2));
+        candidateMoves.add(new Move(rank, file, rank + 1, file - 2));
+        candidateMoves.add(new Move(rank, file, rank - 1, file + 2));
+        candidateMoves.add(new Move(rank, file, rank + 2, file + 1));
+        candidateMoves.add(new Move(rank, file, rank - 2, file + 1));
+        candidateMoves.add(new Move(rank, file, rank + 2, file - 1));
+        candidateMoves.add(new Move(rank, file, rank - 2, file - 1));
+
+        Set<Move> moves = new HashSet<>();
+        for (Move move : candidateMoves) {
+            if (move.isWithinBoard(Board.BOARD_SIZE)) {
+                boolean canMove = canMoveInDirection(move.start(), move.end());
+                boolean canCapture = canCaptureInDirection(move.start(), move.end());
+                if (canMove || canCapture) {
+                    moves.add(move);
+                }
+            }   
+        }
         return moves;
     }
 
     @Override
     public String toString() {
-        return (color == PieceColor.WHITE) ? "♘" : "♞";
+        return (color == PieceColor.WHITE) ? "♞" : "♘";
     }
 
 }
