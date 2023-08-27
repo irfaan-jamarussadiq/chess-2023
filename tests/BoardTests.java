@@ -123,4 +123,49 @@ public class BoardTests {
         assertFalse(board.isNormalMove(new Location(1, 4), new Location(8, 4)));
     }
 
+    @Test
+    public void testCanOnlyCastleWithEmptySquares() {
+        Board board = new Board();
+        assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+        board.movePiece(new Move(1, 7, 3, 6));
+        assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(2, 5, 4, 5));
+        board.movePiece(new Move(7, 4, 5, 4));
+        board.movePiece(new Move(1, 6, 4, 3));
+        assertNull(board.pieceAt(1, 6));
+        assertNull(board.pieceAt(1, 7));
+        assertTrue(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+    }
+
+    @Test
+    public void testCannotCastleIfRookHasMoved() {
+        Board board = new Board();
+        board.movePiece(new Move(1, 7, 3, 6));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(2, 5, 4, 5));
+        board.movePiece(new Move(7, 4, 5, 4));
+        board.movePiece(new Move(1, 6, 4, 3));
+        board.movePiece(new Move(1, 8, 1, 7));
+        board.movePiece(new Move(1, 7, 1, 8));
+        assertNull(board.pieceAt(1, 6));
+        assertNull(board.pieceAt(1, 7));
+        assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+    }
+
+    @Test
+    public void testCannotCastleIfKingHasMoved() {
+        Board board = new Board();
+        board.movePiece(new Move(1, 7, 3, 6));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(2, 5, 4, 5));
+        board.movePiece(new Move(7, 4, 5, 4));
+        board.movePiece(new Move(1, 6, 4, 3));
+        board.movePiece(new Move(1, 5, 1, 6));
+        board.movePiece(new Move(1, 6, 1, 5));
+        assertNull(board.pieceAt(1, 6));
+        assertNull(board.pieceAt(1, 7));
+        assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+    }
+
 }
