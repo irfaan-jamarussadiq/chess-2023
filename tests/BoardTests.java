@@ -168,4 +168,31 @@ public class BoardTests {
         assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
     }
 
+    @Test
+    public void testIsInCheckmate() {
+        Board board = new Board();
+        board.movePiece(new Move(2, 5, 4, 5));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(1, 6, 4, 3));
+        board.movePiece(new Move(8, 6, 5, 3));
+        board.movePiece(new Move(1, 4, 5, 8));
+        board.movePiece(new Move(8, 7, 6, 6));
+        board.movePiece(new Move(5, 8, 7, 6));
+        assertFalse(board.isInCheckmate(WHITE));
+        assertTrue(board.isInCheckmate(BLACK));
+    }
+
+    @Test
+    public void testPieceCapturePreventsCheckmate() {
+        Board board = new Board();
+        board.movePiece(new Move(2, 5, 4, 5));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(1, 6, 4, 3));
+        board.movePiece(new Move(8, 6, 5, 3));
+        board.movePiece(new Move(1, 4, 5, 8));
+        board.movePiece(new Move(8, 7, 6, 8));
+        board.movePiece(new Move(5, 8, 7, 6));
+        assertFalse(board.isInCheckmate(WHITE));
+        assertFalse(board.isInCheckmate(BLACK));
+    }
 }
