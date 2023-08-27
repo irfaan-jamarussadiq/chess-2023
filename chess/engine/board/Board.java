@@ -43,6 +43,9 @@ public class Board {
         Location start = move.start();
         Location end = move.end();
 
+        Piece pieceToMove = pieceAt(start);
+        Board boardCopy = this.deepCopy();
+
         if (isNormalMove(start, end)) {
             makeNormalMove(start, end);
         } else if (isCaptureMove(start, end)) {
@@ -57,7 +60,12 @@ public class Board {
             return false;
         }
 
-        return true;
+        boolean validMove = pieceToMove != null && !isInCheck(pieceToMove.color);
+        if (!validMove) {
+            board = boardCopy.board;
+        }
+
+        return validMove;
     }
 
     private void makeNormalMove(Location start, Location end) {
@@ -221,7 +229,7 @@ public class Board {
 
         PieceColor otherPlayer = (player == WHITE) ? BLACK : WHITE;
         Set<Location> defenders = getAttackers(attackers.iterator().next(), otherPlayer);
-        return attackers.size() == 1 && defenders.size() == 0;
+        return attackers.size() == 1 && defenders.size() == 1;
     }
 
     boolean squareAttacked(Location location, PieceColor player) {
