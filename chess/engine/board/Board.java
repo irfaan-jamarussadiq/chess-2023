@@ -218,7 +218,7 @@ public class Board {
         return true;
     }
 
-    boolean squareAttacked(Location location, PieceColor player) {
+    private boolean squareAttacked(Location location, PieceColor player) {
         return getAttackers(location, player).size() > 0;
     }
 
