@@ -71,7 +71,7 @@ public class Board {
         Piece pieceToMove = pieceAt(start);
         Piece pieceAtEnd = pieceAt(end);
         Move move = new Move(start, end);
-        return move.hasClearPath(this) 
+        return move.hasClearPath(this)
                 && pieceToMove != null && pieceAtEnd == null
                 && pieceToMove.canMoveInDirection(start, end);
     }
@@ -203,22 +203,26 @@ public class Board {
             }
         }
 
-        // Find attacker and see if any piece can capture it.
-        Set<Location> attackers = getAttackers(kingLocation, player);
-        if (attackers.size() > 1) {
-            return true;
+        for (Location location : board.keySet()) {
+            Piece piece = pieceAt(location);
+            if (piece != null && piece.isFriendOf(king)) {
+                Set<Move> pieceMoves = piece.getPossibleMoves(this, location);
+                for (Move move : pieceMoves) {
+                    if (!moveWouldCauseCheck(move, player)) {
+                        return false;
+                    }
+                }
+            }
         }
 
-        PieceColor otherPlayer = (player == WHITE) ? BLACK : WHITE;
-        Set<Location> defenders = getAttackers(attackers.iterator().next(), otherPlayer);
-        return attackers.size() == 1 && defenders.size() == 1;
+        return true;
     }
 
     boolean squareAttacked(Location location, PieceColor player) {
         return getAttackers(location, player).size() > 0;
     }
 
-    public Set<Location> getAttackers(Location location, PieceColor player) {
+    private Set<Location> getAttackers(Location location, PieceColor player) {
         Set<Location> attackers = new HashSet<>();
         Set<Move> queenMoves = new Queen(player).getPossibleMoves(this, location);
         for (Move move : queenMoves) {
@@ -243,7 +247,7 @@ public class Board {
                 }
             }
         }
-        
+
         return attackers;
     }
 
@@ -251,7 +255,7 @@ public class Board {
         Location kingLocation = getKingLocation(player);
         return squareAttacked(kingLocation, player);
     }
-    
+
     public boolean isInStalemate(PieceColor player) {
         Location kingLocation = getKingLocation(player);
         King king = new King(player);

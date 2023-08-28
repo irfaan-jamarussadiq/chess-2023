@@ -1,0 +1,1 @@
+find . -wholename '*.java' | xargs wc -l

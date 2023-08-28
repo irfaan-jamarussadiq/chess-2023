@@ -40,4 +40,23 @@ public class GameTests {
         assertEquals(game.getCurrentPlayer(), WHITE);
     }
 
+    // private void makeMove(Game game, String move) {
+    //     if (move.length() == 2) {
+    //         int rank = move.charAt(1) - '0';
+    //         int file = move.charAt(0) - 'a' + 1;
+    //         if (rank >= 1 && rank <= 8 && file >= 1 && file <= 8) {
+    //             Location start = new Location(rank, file);
+    //             Piece pieceToMove = board.pieceAt(start);
+    //             if (pieceToMove != null) {
+    //                 PieceColor enemyColor = game.getCurrentPlayer() == WHITE ? BLACK : WHITE;
+    //                 Set<Location> defenders = board.getAttackers(start, enemyColor);
+    //                 if (defenders.size() == 1) {
+    //                     Location end = defenders.iterator().next();
+    //                     board.movePiece(new Move(start, end));
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
 }
