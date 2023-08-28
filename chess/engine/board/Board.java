@@ -43,9 +43,6 @@ public class Board {
         Location start = move.start();
         Location end = move.end();
 
-        Piece pieceToMove = pieceAt(start);
-        Board boardCopy = this.deepCopy();
-
         if (isNormalMove(start, end)) {
             makeNormalMove(start, end);
         } else if (isCaptureMove(start, end)) {
@@ -60,12 +57,7 @@ public class Board {
             return false;
         }
 
-        boolean validMove = pieceToMove != null && !isInCheck(pieceToMove.color);
-        if (!validMove) {
-            board = boardCopy.board;
-        }
-
-        return validMove;
+        return true;
     }
 
     private void makeNormalMove(Location start, Location end) {
@@ -139,7 +131,7 @@ public class Board {
         boolean kingHasNotMoved = king instanceof King && !king.hasMoved();
         // Check if rook has not moved
         Piece rook = pieceAt(new Location(start.rank(), 1));
-        if (rook == null) {
+        if (rook == null || start.file() != 5) {
             return false;
         }
 
@@ -205,17 +197,7 @@ public class Board {
         Set<Move> kingMoves = king.getPossibleMoves(this, kingLocation);
         for (Move move : kingMoves) {
             if (move.isWithinBoard(BOARD_SIZE) && !squareAttacked(move.end(), player)) {
-                // Move piece
-                Piece startPiece = pieceAt(move.start());
-                Piece endPiece = pieceAt(move.end());
-                clearSquare(move.start());
-                addPiece(move.end(), startPiece);
-                // Determine if king is in check
-                boolean isInCheck = isInCheck(player);
-                // Undo move
-                addPiece(move.start(), startPiece);
-                addPiece(move.end(), endPiece);
-                if (!isInCheck) {
+                if (!moveWouldCauseCheck(move, player)) {
                     return false;
                 }
             }
@@ -236,7 +218,7 @@ public class Board {
         return getAttackers(location, player).size() > 0;
     }
 
-    private Set<Location> getAttackers(Location location, PieceColor player) {
+    public Set<Location> getAttackers(Location location, PieceColor player) {
         Set<Location> attackers = new HashSet<>();
         Set<Move> queenMoves = new Queen(player).getPossibleMoves(this, location);
         for (Move move : queenMoves) {
@@ -269,23 +251,13 @@ public class Board {
         Location kingLocation = getKingLocation(player);
         return squareAttacked(kingLocation, player);
     }
-
+    
     public boolean isInStalemate(PieceColor player) {
         Location kingLocation = getKingLocation(player);
         King king = new King(player);
         Set<Move> kingMoves = king.getPossibleMoves(this, kingLocation);
         for (Move move : kingMoves) {
-            // Move piece
-            Piece startPiece = pieceAt(move.start());
-            Piece endPiece = pieceAt(move.end());
-            clearSquare(move.start());
-            addPiece(move.end(), startPiece);
-            // Determine if king is in check
-            boolean isInCheck = isInCheck(player);
-            // Undo move
-            addPiece(move.start(), startPiece);
-            addPiece(move.end(), endPiece);
-            if (!isInCheck) {
+            if (!moveWouldCauseCheck(move, player)) {
                 return false;
             }
         }
@@ -297,13 +269,22 @@ public class Board {
         for (Location location : board.keySet()) {
             Piece piece = pieceAt(location);
             if (piece != null && piece.isFriendOf(king)) {
-                if (piece.getPossibleMoves(this, location).size() > 0) {
-                    return false;
+                Set<Move> pieceMoves = piece.getPossibleMoves(this, location);
+                for (Move move : pieceMoves) {
+                    if (!moveWouldCauseCheck(move, player)) {
+                        return false;
+                    }
                 }
             }
         }
 
         return true;
+    }
+
+    private boolean moveWouldCauseCheck(Move move, PieceColor player) {
+        Board boardCopy = deepCopy();
+        boolean isValidMove = boardCopy.movePiece(move);
+        return !isValidMove || boardCopy.isInCheck(player);
     }
 
     private Location getKingLocation(PieceColor player) {

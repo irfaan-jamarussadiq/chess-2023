@@ -1,7 +1,6 @@
 package tests;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import chess.engine.board.Board;
@@ -194,5 +193,28 @@ public class BoardTests {
         board.movePiece(new Move(5, 8, 7, 6));
         assertFalse(board.isInCheckmate(WHITE));
         assertFalse(board.isInCheckmate(BLACK));
+    }
+
+    @Test
+    public void testStalemate() {
+        Board board = new Board();
+        Move[] moves = {
+            new Move(2, 5, 3, 5), new Move(7, 1, 5, 1), // e3 a5
+            new Move(1, 4, 5, 8), new Move(8, 1, 6, 1), // Qh5 Ra6
+            new Move(5, 8, 5, 1), new Move(7, 8, 5, 8), // Qxa5 h5
+            new Move(2, 8, 4, 8), new Move(6, 1, 6, 8), // h4 Rah6
+            new Move(5, 1, 7, 3), new Move(7, 6, 6, 6), // Qxc7 f6
+            new Move(7, 3, 7, 4), new Move(8, 5, 7, 6), // Qxd7+ Kf7
+            new Move(7, 4, 7, 2), new Move(8, 4, 3, 4), // Qxb7 Qd3
+            new Move(7, 2, 8, 2), new Move(3, 4, 7, 8), // Qxb8 Qh7
+            new Move(8, 2, 8, 3), new Move(7, 6, 6, 7), // Qxc8 Kg6
+            new Move(8, 3, 6, 5) // Qe6
+        };
+
+        for (Move move : moves) {
+            board.movePiece(move);
+        }
+
+        assertTrue(board.isInStalemate(BLACK));
     }
 }

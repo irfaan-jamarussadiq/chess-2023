@@ -33,19 +33,27 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Move> getPossibleMoves(Board board, Location location) {
-        Set<Move> moves = new HashSet<>();
+        Set<Move> candidateMoves = new HashSet<>();
         int rank = location.rank();
         int file = location.file();
         int dir = color.getDirection();
 
-        moves.add(new Move(rank, file, rank + dir, file));
+        candidateMoves.add(new Move(rank, file, rank + dir, file));
 
         if (rank == color.getPawnStartingRank()) {
-            moves.add(new Move(rank, file, rank + 2 * dir, file));
+            candidateMoves.add(new Move(rank, file, rank + 2 * dir, file));
         }
 
-        moves.add(new Move(rank, file, rank + dir, file + dir));
-        moves.add(new Move(rank, file, rank + dir, file - dir));
+        candidateMoves.add(new Move(rank, file, rank + dir, file + dir));
+        candidateMoves.add(new Move(rank, file, rank + dir, file - dir));
+
+        Set<Move> moves = new HashSet<>();
+        for (Move move : candidateMoves) {
+            if (move.isWithinBoard(Board.BOARD_SIZE)) {
+                moves.add(move);
+            }
+        }
+
         return moves;
     }
 
