@@ -1,4 +1,4 @@
-package tests;
+package chess.engine.tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
