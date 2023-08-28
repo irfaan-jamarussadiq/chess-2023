@@ -7,11 +7,13 @@ Abstract class that Pawn, Knight, Bishop, Rook, Queen, and King classes derive f
 #### Attributes
 - `PieceColor color`
   - Enum, can be either `WHITE` or `BLACK`
+- `boolean hasMoved`
+  - Used to check whether piece has moved. Useful for determining castling rights.
 #### Methods
 - `canCaptureInDirection(Location start, Location end)`
   - Can use this method as a heuristic to check whether the piece can move from start to end based on how the piece moves.
-- `getPossibleMoves(Location location, int boardSize)`
-  - Generates a list of possible moves at the given location based on how the piece moves. This will not check if the moves are legal on the board.
+- `getPossibleMoves(Board board, Location location)`
+  - Generates a list of possible moves at the given location based on how the piece moves. This will perform some basic checks on whether the moves are legal on the board, but the move may still cause check to the player.
 - `isEnemyOf(Piece piece)`
   - Checks whether the current piece is not the same color as another piece. Useful when checking if one piece can capture another.
 - `isFriendOf(Piece piece)`
