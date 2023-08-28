@@ -135,6 +135,11 @@ public class BoardTests {
         assertNull(board.pieceAt(1, 6));
         assertNull(board.pieceAt(1, 7));
         assertTrue(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+
+        boolean isValidMove = board.movePiece(new Move(1, 5, 1, 7));
+        assertTrue(isValidMove);
+        assertTrue(board.pieceAt(1, 7) instanceof King);
+        assertTrue(board.pieceAt(1, 6) instanceof Rook);
     }
 
     @Test
@@ -165,6 +170,22 @@ public class BoardTests {
         assertNull(board.pieceAt(1, 6));
         assertNull(board.pieceAt(1, 7));
         assertFalse(board.isShortCastlingMove(new Location(1, 5), new Location(1, 7)));
+    }
+
+    @Test
+    public void testIsInCheckButNotCheckmate() {
+        Board board = new Board();
+        board.movePiece(new Move(2, 4, 4, 4));
+        board.movePiece(new Move(7, 5, 5, 5));
+        board.movePiece(new Move(4, 4, 5, 5));
+        board.movePiece(new Move(8, 6, 4, 2));
+        assertFalse(board.isInCheckmate(WHITE));
+        board.movePiece(new Move(1, 2, 3, 3));
+        board.movePiece(new Move(4, 2, 3, 3));
+        assertFalse(board.isInCheckmate(WHITE));
+        board.movePiece(new Move(1, 3, 2, 4));
+        board.movePiece(new Move(3, 3, 2, 4));
+        assertFalse(board.isInCheckmate(WHITE));
     }
 
     @Test
